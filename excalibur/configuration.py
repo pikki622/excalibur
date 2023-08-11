@@ -51,9 +51,7 @@ class ExcaliburConfigParser(ConfigParser):
         if self.get(
             "core", "executor"
         ) != "SequentialExecutor" and "sqlite" in self.get("core", "sql_alchemy_conn"):
-            raise ValueError(
-                "Cannot use sqlite with the {}".format(self.get("core", "executor"))
-            )
+            raise ValueError(f'Cannot use sqlite with the {self.get("core", "executor")}')
 
         self.is_validated = True
 
@@ -91,7 +89,7 @@ else:
 mkdirs(EXCALIBUR_HOME)
 
 if "EXCALIBUR_CONFIG" not in os.environ:
-    EXCALIBUR_CONFIG = EXCALIBUR_HOME + "/excalibur.cfg"
+    EXCALIBUR_CONFIG = f"{EXCALIBUR_HOME}/excalibur.cfg"
 else:
     EXCALIBUR_CONFIG = expand_env_var(os.environ["EXCALIBUR_CONFIG"])
 
@@ -127,9 +125,7 @@ ALLOWED_EXTENSIONS = ["pdf", "json"]
 SECRET_KEY = conf.get("webserver", "SECRET_KEY")
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 PDFS_FOLDER = os.path.join(PROJECT_ROOT, "www/static/uploads")
-USING_SQLITE = (
-    True if conf.get("core", "SQL_ALCHEMY_CONN").startswith("sqlite") else False
-)
+USING_SQLITE = bool(conf.get("core", "SQL_ALCHEMY_CONN").startswith("sqlite"))
 
 get = conf.get
 has_option = conf.has_option
