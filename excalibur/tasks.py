@@ -29,7 +29,7 @@ def split(file_id):
             filedims,
             imagedims,
             detected_areas,
-        ) = ({} for i in range(7))
+        ) = ({} for _ in range(7))
         for page in extract_pages:
             # extract into single-page PDF
             save_page(file.filepath, page)
@@ -42,11 +42,9 @@ def split(file_id):
             # convert single-page PDF to PNG
             gs_call = f"-q -sDEVICE=png16m -o {imagepath} -r300 {filepath}"
             gs_call = gs_call.encode().split()
-            null = open(os.devnull, "wb")
-            with Ghostscript(*gs_call, stdout=null):
-                pass
-            null.close()
-
+            with open(os.devnull, "wb") as null:
+                with Ghostscript(*gs_call, stdout=null):
+                    pass
             filenames[page] = filename
             filepaths[page] = filepath
             imagenames[page] = imagename
@@ -54,7 +52,7 @@ def split(file_id):
             filedims[page] = get_file_dim(filepath)
             imagedims[page] = get_image_dim(imagepath)
 
-            lattice_areas, stream_areas = (None for i in range(2))
+            lattice_areas, stream_areas = (None for _ in range(2))
             # lattice
             parser = Lattice()
             tables = parser.extract_tables(filepath)

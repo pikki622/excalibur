@@ -25,26 +25,25 @@ def get_pages(filename, pages, password=""):
 
     """
     page_numbers = []
-    inputstream = open(filename, "rb")
-    infile = PdfFileReader(inputstream, strict=False)
-    N = infile.getNumPages()
-    if pages == "1":
-        page_numbers.append({"start": 1, "end": 1})
-    else:
-        if infile.isEncrypted:
-            infile.decrypt(password)
-        if pages == "all":
-            page_numbers.append({"start": 1, "end": infile.getNumPages()})
+    with open(filename, "rb") as inputstream:
+        infile = PdfFileReader(inputstream, strict=False)
+        N = infile.getNumPages()
+        if pages == "1":
+            page_numbers.append({"start": 1, "end": 1})
         else:
-            for r in pages.split(","):
-                if "-" in r:
-                    a, b = r.split("-")
-                    if b == "end":
-                        b = infile.getNumPages()
-                    page_numbers.append({"start": int(a), "end": int(b)})
-                else:
-                    page_numbers.append({"start": int(r), "end": int(r)})
-    inputstream.close()
+            if infile.isEncrypted:
+                infile.decrypt(password)
+            if pages == "all":
+                page_numbers.append({"start": 1, "end": infile.getNumPages()})
+            else:
+                for r in pages.split(","):
+                    if "-" in r:
+                        a, b = r.split("-")
+                        if b == "end":
+                            b = infile.getNumPages()
+                        page_numbers.append({"start": int(a), "end": int(b)})
+                    else:
+                        page_numbers.append({"start": int(r), "end": int(r)})
     P = []
     for p in page_numbers:
         P.extend(range(p["start"], p["end"] + 1))

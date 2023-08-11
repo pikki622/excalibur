@@ -76,7 +76,7 @@ def files():
         session.commit()
         session.close()
 
-        command = "excalibur run --task {} --uuid {}".format("split", file_id)
+        command = f"excalibur run --task split --uuid {file_id}"
         command_as_list = command.split(" ")
         executor = get_default_executor()
         executor.execute_async(command_as_list)
@@ -89,8 +89,8 @@ def workspaces(file_id):
     file = session.query(File).filter(File.file_id == file_id).first()
     rules = session.query(Rule).order_by(Rule.created_at.desc()).all()
     session.close()
-    imagepaths, saved_rules = (None for i in range(2))
-    filedims, imagedims, detected_areas = ("null" for i in range(3))
+    imagepaths, saved_rules = (None for _ in range(2))
+    filedims, imagedims, detected_areas = ("null" for _ in range(3))
     if file.has_image:
         imagepaths = json.loads(file.imagepaths)
         for page in imagepaths:
@@ -238,7 +238,7 @@ def jobs(job_id):
     session.commit()
     session.close()
 
-    command = "excalibur run --task {} --uuid {}".format("extract", job_id)
+    command = f"excalibur run --task extract --uuid {job_id}"
     command_as_list = command.split(" ")
     executor = get_default_executor()
     executor.execute_async(command_as_list)
